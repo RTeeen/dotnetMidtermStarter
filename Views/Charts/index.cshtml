@@ -1,0 +1,73 @@
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<div id="column_chart_div"></div>
+<div id="line_chart_div"></div>
+<div id="pie_chart_div"></div>
+<div id="area_chart_div"></div>
+<div id="bar_chart_div"></div>
+<div id="pie_chart_3d_div"></div>
+
+
+<script type="text/javascript">
+    google.charts.load('current', {
+        packages: ['corechart', 'bar']
+    });
+
+    google.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var jsonData = $.ajax({
+            url: '/Charts/onget',
+            dataType: "json",
+            async: false
+        }).responseText;
+
+        // Choose Which charts you need to show and remove the rest
+
+        PopulationChart(jsonData, "column-chart");
+        PopulationChart(jsonData, "line-chart");
+        PopulationChart(jsonData, "pie-chart");
+        PopulationChart(jsonData, "area-chart");
+        PopulationChart(jsonData, "bar-chart");
+        PopulationChart(jsonData, "pie-chart-3d");
+    }
+
+    function PopulationChart(jsonData, chart_type) {
+        // Create our data table out of JSON data loaded from server.
+        var data = new google.visualization.DataTable(jsonData);
+        var chart;
+
+        //Chart Title here
+
+        var options = { title: 'Students By Department' };
+
+        switch (chart_type) {
+
+            case "line-chart":
+                chart = new google.visualization.LineChart(document.getElementById('line_chart_div'));
+                break;
+            case "pie-chart":
+                chart = new google.visualization.PieChart(document.getElementById('pie_chart_div'));
+                break;
+            case "area-chart":
+                chart = new google.visualization.AreaChart(document.getElementById('area_chart_div'));
+                break;
+            case "bar-chart":
+                chart = new google.visualization.BarChart(document.getElementById('bar_chart_div'));
+                break;
+            case "pie-chart-3d":
+                options.is3D = true;
+                chart = new google.visualization.PieChart(document.getElementById('pie_chart_3d_div'));
+                break;
+            default:
+                chart = new google.visualization.ColumnChart(document.getElementById('column_chart_div'));
+                break;
+        }
+
+        chart.draw(data, options);
+        return false;
+    }
+
+</script> 
+
